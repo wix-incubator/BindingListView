@@ -3,7 +3,7 @@
 
 @implementation RCTBindingCell
 
-+(NSString*)getCellIdentifier
++ (NSString*)getCellIdentifier
 {
   static NSString *cellIdentifier = @"CustomCell";
   return cellIdentifier;

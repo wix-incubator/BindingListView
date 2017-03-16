@@ -7,19 +7,12 @@
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
 
-
-@interface RCTBindingListView()<UITableViewDataSource, UITableViewDelegate>
-
-@property (strong, nonatomic) UITableView *tableView;
-
-@end
-
-
 @implementation RCTBindingListView
 
-  RCTBridge *_bridge;
-  RCTUIManager *_uiManager;
-  NSMutableArray *_unusedCells;
+RCTBridge *_bridge;
+UITableView *_tableView;
+RCTUIManager *_uiManager;
+NSMutableArray *_unusedCells;
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
 {
@@ -29,7 +22,8 @@
   {
     _bridge = bridge;
     while ([_bridge respondsToSelector:NSSelectorFromString(@"parentBridge")]
-           && [_bridge valueForKey:@"parentBridge"]) {
+           && [_bridge valueForKey:@"parentBridge"])
+    {
       _bridge = [_bridge valueForKey:@"parentBridge"];
     }
     _uiManager = _bridge.uiManager;
@@ -50,7 +44,7 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
 
 - (void)layoutSubviews
 {
-  [self.tableView setFrame:self.frame];
+  [_tableView setFrame:self.frame];
 }
 
 - (void)createTableView
@@ -93,7 +87,7 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
   return res;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
   return self.rowHeight;
 }

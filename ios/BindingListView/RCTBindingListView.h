@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 @class RCTBridge;
 
-@interface RCTBindingListView : UIView
+@interface RCTBindingListView : UIView<UITableViewDataSource, UITableViewDelegate>
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
