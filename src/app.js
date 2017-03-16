@@ -31,7 +31,8 @@ export default class App extends Component {
             { id: 'initialsText', toRowKey: 'initials' },
             { id: 'nameText', toRowKey: 'name' }
           ]}
-          renderItemTemplate={this.renderItemTemplate.bind(this)}
+          renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
+          // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
           rowHeight={71}
           poolSize={20}
           style={{flex: 1}}
@@ -39,21 +40,7 @@ export default class App extends Component {
       </View>
     );
   }
-  renderItemTemplate(bind) {
-    return (
-      <View style={styles.rowBody}>
-        <View style={styles.initialsCircle}>
-          <Text
-            ref={(element) => bind(element, { id: 'initialsText', toProp: 'children' })}
-            style={styles.initials}>FL</Text>
-        </View>
-        <Text
-          ref={(element) => bind(element, { id: 'nameText', toProp: 'children' })}
-          style={styles.name}>First Last</Text>
-      </View>
-    );
-  }
-  renderItemTemplate2(bind) {
+  renderItemTemplate_withTextInputs(bind) {
     return (
       <View style={styles.rowBody}>
         <View style={styles.initialsCircle}>
@@ -66,6 +53,20 @@ export default class App extends Component {
           ref={(element) => bind(element, { id: 'nameText', toProp: 'text' })}
           editable={false}
           style={styles.name} />
+      </View>
+    );
+  }
+  renderItemTemplate_withTexts(bind) {
+    return (
+      <View style={styles.rowBody}>
+        <View style={[styles.initialsCircle, {backgroundColor: '#e6796a'}]}>
+          <Text
+            ref={(element) => bind(element, { id: 'initialsText', toProp: 'children' })}
+            style={styles.initials}>FL</Text>
+        </View>
+        <Text
+          ref={(element) => bind(element, { id: 'nameText', toProp: 'children' })}
+          style={styles.name}>First Last</Text>
       </View>
     );
   }
