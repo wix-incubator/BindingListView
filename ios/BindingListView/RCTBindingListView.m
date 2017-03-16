@@ -14,27 +14,6 @@
 
 @end
 
-@interface TableViewCell : UITableViewCell
-
-@property (nonatomic, weak) UIView *cellView;
-
-@end
-
-@implementation TableViewCell
-
--(void)setCellView:(UIView *)cellView
-{
-  _cellView = cellView;
-  [self.contentView addSubview:cellView];
-}
-
--(void)setFrame:(CGRect)frame
-{
-  [super setFrame:frame];
-  [_cellView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-}
-
-@end
 
 @implementation RCTBindingListView
 
@@ -99,9 +78,9 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
   return self.numRows;
 }
 
-- (UIView*)getUnusedCellFromPool
+- (RCTBindingCell*)getUnusedCellFromPool
 {
-  UIView* res = [_unusedCells lastObject];
+  RCTBindingCell* res = [_unusedCells lastObject];
   [_unusedCells removeLastObject];
   if (res != nil)
   {
@@ -121,28 +100,23 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
 
 - (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  static NSString *cellIdentifier = @"CustomCell";
-  
-  TableViewCell *cell = (TableViewCell *)[theTableView dequeueReusableCellWithIdentifier:cellIdentifier];
+  RCTBindingCell *cell = (RCTBindingCell *)[theTableView dequeueReusableCellWithIdentifier:[RCTBindingCell getCellIdentifier]];
   if (cell == nil)
   {
     //NSLog(@"Allocating childIndex %d for row %d", (int)cell.cellView.tag, (int)indexPath.row);
-    cell = [[TableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    cell.cellView = [self getUnusedCellFromPool];
-    
+    cell = [self getUnusedCellFromPool];
   }
   else
   {
     //NSLog(@"Recycling childIndex %d for row %d", (int)cell.cellView.tag, (int)indexPath.row);
   }
   
-  RCTBindingCell *bindingCell = (RCTBindingCell *)cell.cellView;
   NSDictionary *row = [self.rows objectAtIndex:indexPath.row];
     
   for (NSString *bindingId in self.binding)
   {
     NSString *rowKey = [self.binding objectForKey:bindingId];
-    NSDictionary *binding = [bindingCell.bindings objectForKey:bindingId];
+    NSDictionary *binding = [cell.bindings objectForKey:bindingId];
     NSNumber *reactTag = [binding objectForKey:@"tag"];
     NSString *viewName = [binding objectForKey:@"viewName"];
     NSString *prop = [binding objectForKey:@"prop"];

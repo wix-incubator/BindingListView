@@ -1,6 +1,8 @@
 #import <UIKit/UIKit.h>
 
-@interface RCTBindingCell : UIView
+@interface RCTBindingCell : UITableViewCell
+
++ (NSString*)getCellIdentifier;
 
 @property (nonatomic) NSDictionary<NSString*, NSDictionary*> *bindings;
 

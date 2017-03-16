@@ -5,9 +5,9 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (UITableViewCell *)view
 {
-  return [[RCTBindingCell alloc] init];
+  return [[RCTBindingCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[RCTBindingCell getCellIdentifier]];
 }
 
 RCT_EXPORT_VIEW_PROPERTY(bindings, NSDictionary)
