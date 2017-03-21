@@ -45,6 +45,11 @@ class BindingRow extends Component {
           {
             this.props.renderItemTemplate((element, { id, toProp }) => {
               if (!toProp) return;
+              switch (element.constructor.displayName) {
+                case 'Image':
+                  element = getRenderedElement(element);
+                  break;
+              }
               if (toProp === 'children') {
                 element = getFirstChild(element);
               }
@@ -60,6 +65,11 @@ class BindingRow extends Component {
       </RCTBindingCell>
     );
   }
+}
+
+function getRenderedElement(element) {
+  // may god help us, is there a better way?
+  return _.get(element, '_reactInternalInstance._renderedComponent');
 }
 
 function getFirstChild(element) {

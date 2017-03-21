@@ -117,6 +117,7 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
   {
     NSString *rowKey = [self.binding objectForKey:bindingId];
     NSDictionary *binding = [cell.bindings objectForKey:bindingId];
+    if (!binding) continue;
     NSNumber *reactTag = [binding objectForKey:@"tag"];
     NSString *viewName = [binding objectForKey:@"viewName"];
     NSString *prop = [binding objectForKey:@"prop"];

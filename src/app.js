@@ -5,10 +5,24 @@ import {
   Text,
   TextInput,
   Button,
-  View
+  View,
+  Image
 } from 'react-native';
 import _ from 'lodash';
 import BindingListView from './BindingListView';
+
+const images = [
+  'https://i.imgur.com/GCBVgXDb.jpg',
+  'https://i.imgur.com/EXQVxqQb.jpg',
+  'https://i.imgur.com/zADtGy9b.jpg',
+  'https://i.imgur.com/EZDQNshb.jpg',
+  'https://i.imgur.com/Jvh1OQmb.jpg',
+  'https://i.imgur.com/tqZm14Rb.jpg',
+  'https://i.imgur.com/9NltrAUb.jpg',
+  'https://i.imgur.com/t6X0wXBb.jpg',
+  'https://i.imgur.com/w7L7Rdkb.jpg',
+  'https://i.imgur.com/JhkYX7Ob.jpg'
+];
 
 const names = require('./names.json');
 const contacts = [];
@@ -17,7 +31,8 @@ for (let i=0 ; i<5000 ; i++) {
   const last = _.sample(names);
   contacts.push({
     name: `${first} ${last}`,
-    initials: `${first.charAt(0)}${last.charAt(0)}`
+    initials: `${first.charAt(0)}${last.charAt(0)}`,
+    image: [{uri: images[i%10]}]
   });
 }
 
@@ -29,10 +44,12 @@ export default class App extends Component {
           rows={contacts}
           binding={[
             { id: 'initialsText', toRowKey: 'initials' },
-            { id: 'nameText', toRowKey: 'name' }
+            { id: 'nameText', toRowKey: 'name' },
+            { id: 'thumbnail', toRowKey: 'image'}
           ]}
-          renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
+          // renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
           // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
+          renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
           rowHeight={71}
           poolSize={20}
           style={{flex: 1}}
@@ -70,6 +87,19 @@ export default class App extends Component {
       </View>
     );
   }
+  renderItemTemplate_withImages(bind) {
+    return (
+      <View style={styles.rowBody}>
+        <Image
+          ref={(element) => bind(element, { id: 'thumbnail', toProp: 'source' })}
+          style={styles.initialsCircle}
+          source={{uri: images[0]}} />
+        <Text
+          ref={(element) => bind(element, { id: 'nameText', toProp: 'children' })}
+          style={styles.name}>First Last</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -93,6 +123,10 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 15
+  },
+  imageCircle: {
+    width: 50,
+    height: 50
   },
   initials: {
     color: 'white',
