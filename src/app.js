@@ -42,14 +42,17 @@ export default class App extends Component {
       <View style={styles.container}>
         <BindingListView
           rows={contacts}
-          binding={[
-            { id: 'initialsText', toRowKey: 'initials' },
-            { id: 'nameText', toRowKey: 'name' },
-            { id: 'thumbnail', toRowKey: 'image'}
-          ]}
-          // renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
+          binderMap={{
+            initialsText: {
+              toRowKey: 'initials'
+            },
+            nameText: {
+              toRowKey: 'name'
+            }
+          }}
+          renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
           // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
-          renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
+          // renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
           rowHeight={71}
           poolSize={20}
           style={{flex: 1}}
@@ -57,22 +60,24 @@ export default class App extends Component {
       </View>
     );
   }
-  renderItemTemplate_withTextInputs(bind) {
+  renderItemTemplate_withTextInputs(binderMap) {
     return (
       <View style={styles.rowBody}>
         <View style={styles.initialsCircle}>
           <TextInput
-            ref={(element) => bind(element, { id: 'initialsText', toProp: 'text' })}
+            value={binderMap.initialsText}
             editable={false}
             style={styles.initials} />
         </View>
         <TextInput
-          ref={(element) => bind(element, { id: 'nameText', toProp: 'text' })}
+          value={binderMap.nameText}
           editable={false}
           style={styles.name} />
       </View>
     );
   }
+  // TALKOL: THE REST ARE NOT SUPPORTED YET
+  /*
   renderItemTemplate_withTexts(bind) {
     return (
       <View style={styles.rowBody}>
@@ -100,6 +105,7 @@ export default class App extends Component {
       </View>
     );
   }
+  */
 }
 
 const styles = StyleSheet.create({
