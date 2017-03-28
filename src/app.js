@@ -48,10 +48,14 @@ export default class App extends Component {
             },
             nameText: {
               toRowKey: 'name'
+            },
+            thumbnail: {
+              toRowKey: 'image'
             }
           }}
-          renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
+          // renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
           // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
+          renderItemTemplate={this.renderItemTemplate_withRelayout.bind(this)}
           // renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
           rowHeight={71}
           poolSize={20}
@@ -76,36 +80,34 @@ export default class App extends Component {
       </View>
     );
   }
-  // TALKOL: THE REST ARE NOT SUPPORTED YET
-  /*
-  renderItemTemplate_withTexts(bind) {
+  renderItemTemplate_withTexts(binderMap) {
     return (
       <View style={styles.rowBody}>
         <View style={[styles.initialsCircle, {backgroundColor: '#e6796a'}]}>
-          <Text
-            ref={(element) => bind(element, { id: 'initialsText', toProp: 'children' })}
-            style={styles.initials}>FL</Text>
+          <Text style={styles.initials}>{binderMap.initialsText}</Text>
         </View>
-        <Text
-          ref={(element) => bind(element, { id: 'nameText', toProp: 'children' })}
-          style={styles.name}>First Last</Text>
+        <Text style={styles.name}>{binderMap.nameText}</Text>
       </View>
     );
   }
-  renderItemTemplate_withImages(bind) {
+  renderItemTemplate_withRelayout(binderMap) {
+    return (
+      <View style={styles.rowBodyRelayout}>
+        <Text style={styles.nameRelayout}>{binderMap.nameText}</Text>
+        <Text style={styles.initialsRelayout}>{binderMap.initialsText}</Text>
+      </View>
+    );
+  }
+  renderItemTemplate_withImages(binderMap) {
     return (
       <View style={styles.rowBody}>
         <Image
-          ref={(element) => bind(element, { id: 'thumbnail', toProp: 'source' })}
           style={styles.initialsCircle}
-          source={{uri: images[0]}} />
-        <Text
-          ref={(element) => bind(element, { id: 'nameText', toProp: 'children' })}
-          style={styles.name}>First Last</Text>
+          source={{uri: binderMap.thumbnail}} />
+        <Text style={styles.name}>{binderMap.nameText}</Text>
       </View>
     );
   }
-  */
 }
 
 const styles = StyleSheet.create({
@@ -143,7 +145,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     backgroundColor: 'white',
     flex: 1
-  }
+  },
+  nameRelayout: {
+    fontSize: 20,
+    backgroundColor: 'red',
+    marginRight: 10
+  },
+  initialsRelayout: {
+    fontSize: 20,
+    backgroundColor: 'yellow'
+  },
+  rowBodyRelayout: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#cccccc',
+    backgroundColor: 'white',
+    height: 71
+  },
 });
 
 AppRegistry.registerComponent('BindingListView', () => App);

@@ -79,7 +79,19 @@ function _getBindingsRecursivelyFromElement(element, bindings, inverseBinderMap)
     const viewConfig = element.viewConfig;
     const propUpdates = ReactNativeAttributePayload.create(props, viewConfig.validAttributes);
     _.forEach(propUpdates, (newValue, propName) => {
-      const bindingId = inverseBinderMap[newValue];
+      let bindingId;
+      if (_.isString(newValue)) {
+        bindingId = inverseBinderMap[newValue];
+      }
+      if (_.isArray(newValue) || _.isPlainObject(newValue)) {
+        _.cloneDeepWith(newValue, (v) => {
+          if (_.isString(v)) {
+            foundBindingId = inverseBinderMap[v];
+            if (foundBindingId) bindingId = foundBindingId;
+            return foundBindingId;
+          }
+        });
+      }
       if (bindingId) {
         bindings[bindingId] = {
           tag: ReactNative.findNodeHandle(element),
@@ -88,5 +100,15 @@ function _getBindingsRecursivelyFromElement(element, bindings, inverseBinderMap)
         };
       }
     });
+  }
+  if (element._currentElement && _.isString(element._currentElement)) {
+    const bindingId = inverseBinderMap[element._currentElement];
+    if (bindingId) {
+      bindings[bindingId] = {
+        tag: ReactNative.findNodeHandle(element),
+        prop: 'text',
+        viewName: 'RCTRawText'
+      };
+    }
   }
 }
