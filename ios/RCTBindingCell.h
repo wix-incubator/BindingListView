@@ -6,4 +6,6 @@
 
 @property (nonatomic) NSDictionary<NSString*, NSDictionary*> *bindings;
 
+- (CGFloat)reactContentHeight;
+
 @end

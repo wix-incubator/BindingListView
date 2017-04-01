@@ -29,10 +29,12 @@ const contacts = [];
 for (let i=0 ; i<5000 ; i++) {
   const first = _.sample(names);
   const last = _.sample(names);
+  const randomStringsCount = Math.floor(Math.random() * 10) + 1;
   contacts.push({
     name: `${first} ${last}`,
     initials: `${first.charAt(0)}${last.charAt(0)}`,
-    image: [{uri: images[i%10]}]
+    image: [{uri: images[i%10]}],
+    randomLengthText: (String(randomStringsCount) + '\n').repeat(randomStringsCount)
   });
 }
 
@@ -51,14 +53,17 @@ export default class App extends Component {
             },
             thumbnail: {
               toRowKey: 'image'
+            },
+            randomLengthText: {
+              toRowKey: 'randomLengthText'
             }
           }}
           // renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
           // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
           renderItemTemplate={this.renderItemTemplate_withRelayout.bind(this)}
           // renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
-          rowHeight={71}
-          poolSize={20}
+          rowHeight={31}
+          poolSize={40}
           style={{flex: 1}}
         />
       </View>
@@ -95,6 +100,7 @@ export default class App extends Component {
       <View style={styles.rowBodyRelayout}>
         <Text style={styles.nameRelayout}>{binderMap.nameText}</Text>
         <Text style={styles.initialsRelayout}>{binderMap.initialsText}</Text>
+        <Text style={{backgroundColor: 'orange'}}>{binderMap.randomLengthText}</Text>
       </View>
     );
   }
@@ -149,20 +155,24 @@ const styles = StyleSheet.create({
   nameRelayout: {
     fontSize: 20,
     backgroundColor: 'red',
-    marginRight: 10
+    marginRight: 10,
+    width: 160,
+    height: 20
   },
   initialsRelayout: {
     fontSize: 20,
-    backgroundColor: 'yellow'
+    backgroundColor: 'yellow',
+    marginRight: 10,
+    width: 50,
+    height: 20
   },
   rowBodyRelayout: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 1,
     borderBottomWidth: 1,
     borderColor: '#cccccc',
     backgroundColor: 'white',
-    height: 71
   },
 });
 

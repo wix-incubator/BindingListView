@@ -1,7 +1,9 @@
 #import "RCTBindingCell.h"
 #import <React/UIView+React.h>
 
-@implementation RCTBindingCell
+@implementation RCTBindingCell {
+  UIView *_rctView;
+}
 
 + (NSString*)getCellIdentifier
 {
@@ -11,7 +13,13 @@
 
 - (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex
 {
+  _rctView = subview;
   [self.contentView addSubview:subview];
+}
+
+- (CGFloat)reactContentHeight
+{
+  return _rctView.frame.size.height;
 }
 
 @end

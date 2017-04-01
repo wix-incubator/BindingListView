@@ -1,0 +1,57 @@
+diff -ur /tmp/BindingListView/node_modules/react-native/React/Modules/RCTUIManager.h node_modules/react-native/React/Modules/RCTUIManager.h
+--- /tmp/BindingListView/node_modules/react-native/React/Modules/RCTUIManager.h	2017-04-01 16:56:42.000000000 +0300
++++ node_modules/react-native/React/Modules/RCTUIManager.h	2017-03-30 08:39:52.000000000 +0300
+@@ -161,3 +161,7 @@
+ @property (nonatomic, readonly) RCTUIManager *uiManager;
+ 
+ @end
++
++FOUNDATION_EXPORT BOOL ShouldSetFlushingBlockToGlobalVarInsteadOfWaitingForMainQueue;
++FOUNDATION_EXPORT void (^FlusingBlockThatHasToBeRunOnMainQueue)();
++
+Only in /tmp/BindingListView/node_modules/react-native/React/Modules: RCTUIManager.h.orig
+diff -ur /tmp/BindingListView/node_modules/react-native/React/Modules/RCTUIManager.m node_modules/react-native/React/Modules/RCTUIManager.m
+--- /tmp/BindingListView/node_modules/react-native/React/Modules/RCTUIManager.m	2017-04-01 16:56:42.000000000 +0300
++++ node_modules/react-native/React/Modules/RCTUIManager.m	2017-03-31 09:25:39.000000000 +0300
+@@ -1168,6 +1168,9 @@
+   [self flushUIBlocks];
+ }
+ 
++BOOL ShouldSetFlushingBlockToGlobalVarInsteadOfWaitingForMainQueue;
++void (^FlusingBlockThatHasToBeRunOnMainQueue)();
++
+ - (void)flushUIBlocks
+ {
+   RCTAssertThread(RCTGetUIManagerQueue(),
+@@ -1182,11 +1185,11 @@
+   if (previousPendingUIBlocks.count) {
+     // Execute the previously queued UI blocks
+     RCTProfileBeginFlowEvent();
+-    dispatch_async(dispatch_get_main_queue(), ^{
++    void (^flushingBlock)() = ^{
+       RCTProfileEndFlowEvent();
+       RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[UIManager flushUIBlocks]", (@{
+-        @"count": @(previousPendingUIBlocks.count),
+-      }));
++                                                                                     @"count": @(previousPendingUIBlocks.count),
++                                                                                     }));
+       @try {
+         for (RCTViewManagerUIBlock block in previousPendingUIBlocks) {
+           block(self, self->_viewRegistry);
+@@ -1195,7 +1198,14 @@
+       @catch (NSException *exception) {
+         RCTLogError(@"Exception thrown while executing UI block: %@", exception);
+       }
+-    });
++    };
++
++    if(ShouldSetFlushingBlockToGlobalVarInsteadOfWaitingForMainQueue) {
++      FlusingBlockThatHasToBeRunOnMainQueue = [flushingBlock copy];
++      ShouldSetFlushingBlockToGlobalVarInsteadOfWaitingForMainQueue = NO;
++    } else {
++      dispatch_async(dispatch_get_main_queue(), flushingBlock);
++    }
+   }
+ }
+ 
+Only in /tmp/BindingListView/node_modules/react-native/React/Modules: RCTUIManager.m.orig
