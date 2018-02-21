@@ -17,7 +17,7 @@ const React = require('React');
  */
 class StaticContainer extends React.Component {
 
-  shouldComponentUpdate(nextProps: Object): boolean {
+  shouldComponentUpdate(nextProps) {
     return !!nextProps.shouldUpdate;
   }
 

@@ -9,7 +9,7 @@ const RCTBindingCell = requireNativeComponent('RCTBindingCell');
 export default class BindingListView extends Component {
   render() {
     const poolChildren = [];
-    for (let i=0 ; i<this.props.poolSize ; i++) {
+    for (let i = 0; i < this.props.poolSize; i++) {
       const child = (
         <BindingRow key={i} renderItemTemplate={this.props.renderItemTemplate} />
       );
@@ -23,6 +23,7 @@ export default class BindingListView extends Component {
         numRows={this.props.rows.length}
         rowHeight={this.props.rowHeight}
         style={this.props.style}
+        poolSize={this.props.poolSize}
       >
         {poolChildren}
       </RCTBindingListView>
@@ -58,7 +59,7 @@ class BindingRow extends Component {
                 prop: toProp,
                 viewName: _.get(element, 'viewConfig.uiViewClassName')
               };
-              this.setState({bindings: this.bindings});
+              this.setState({ bindings: this.bindings });
             })
           }
         </StaticContainer>

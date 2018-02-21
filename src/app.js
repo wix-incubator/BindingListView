@@ -51,7 +51,7 @@ export default class App extends Component {
           // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
           renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
           rowHeight={71}
-          poolSize={20}
+          poolSize={30}
           style={{flex: 1}}
         />
       </View>

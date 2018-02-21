@@ -7,11 +7,11 @@
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
 
-@interface RCTUIManager (BindingListView)
-
-- (void)updateView:(NSNumber *)reactTag viewName:(NSString *)viewName props:(NSDictionary *)props;
-
-@end
+//@interface RCTUIManager (BindingListView)
+//
+//- (void)updateView:(NSNumber *)reactTag viewName:(NSString *)viewName props:(NSDictionary *)props;
+//
+//@end
 
 @implementation RCTBindingListView
 
