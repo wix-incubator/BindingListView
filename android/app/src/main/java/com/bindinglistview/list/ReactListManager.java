@@ -30,15 +30,7 @@ public class ReactListManager extends ViewGroupManager<RecyclerView> {
         adapter = new ReactListAdapter(reactContext);
         RecyclerView list = new RecyclerView(reactContext);
         list.setLayoutManager(new LinearLayoutManager(reactContext));
-        list.setRecyclerListener(new RecyclerView.RecyclerListener() {
-            @Override
-            public void onViewRecycled(RecyclerView.ViewHolder holder) {
-                Log.i("NIGA", holder.itemView.toString());
-                if (holder.itemView instanceof ReactCell) {
-                    adapter.addCell((ReactCell) holder.itemView);
-                }
-            }
-        });
+        list.setItemViewCacheSize(poolSize);
         return list;
     }
 
@@ -54,10 +46,7 @@ public class ReactListManager extends ViewGroupManager<RecyclerView> {
 
     @ReactProp(name = "binding")
     public void setBinding(RecyclerView view, ReadableMap binding) {
-        ReadableMapKeySetIterator iterator = binding.keySetIterator();
-        while (iterator.hasNextKey()) {
-            Log.i("NIGA", "binding = " + iterator.nextKey());
-        }
+        //TODO: implement laterrr
     }
 
     @ReactProp(name = "rows")

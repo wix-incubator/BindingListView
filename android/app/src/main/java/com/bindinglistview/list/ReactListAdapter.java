@@ -46,6 +46,16 @@ public class ReactListAdapter extends RecyclerView.Adapter<ReactListAdapter.Reac
         return data.size();
     }
 
+    @Override
+    public void onViewDetachedFromWindow(ReactViewHolder holder) {
+        addCell((ReactCell) holder.itemView);
+    }
+
+    @Override
+    public void onViewRecycled(ReactViewHolder holder) {
+        addCell((ReactCell) holder.itemView);
+    }
+
     void setData(ReadableArray data) {
         this.data = data;
     }
