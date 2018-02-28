@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.views.view.ReactViewGroup;
 
 
 public class ReactCell extends FrameLayout {
@@ -32,5 +33,9 @@ public class ReactCell extends FrameLayout {
 
     public int getTextTag() {
         return textTag;
+    }
+
+    public ReactViewGroup getViewGroup() {
+        return (ReactViewGroup) getChildAt(0);
     }
 }

@@ -21,7 +21,17 @@ const images = [
   'https://i.imgur.com/9NltrAUb.jpg',
   'https://i.imgur.com/t6X0wXBb.jpg',
   'https://i.imgur.com/w7L7Rdkb.jpg',
-  'https://i.imgur.com/JhkYX7Ob.jpg'
+  'https://i.imgur.com/JhkYX7Ob.jpg',
+  'https://i.imgur.com/UvLRqGQb.jpg',
+  'https://i.imgur.com/H7ZaN6Qb.jpg',
+  'https://i.imgur.com/h5OS6fmb.jpg',
+  'https://i.imgur.com/VyQDhx6b.jpg',
+  'https://i.imgur.com/VcyAGdrb.jpg',
+  'https://i.imgur.com/u68RL2tb.jpg',
+  'https://i.imgur.com/nXvIbsNb.jpg',
+  'https://i.imgur.com/TGkvvRSb.jpg',
+  'https://i.imgur.com/SAk6HtRb.jpg',
+  'https://i.imgur.com/7Bvc4kLb.png'
 ];
 
 const names = require('./names.json');
@@ -32,7 +42,7 @@ for (let i=0 ; i<5000 ; i++) {
   contacts.push({
     name: `${first} ${last}`,
     initials: `${first.charAt(0)}${last.charAt(0)}`,
-    image: [{uri: images[i%10]}]
+    image: [{uri: images[i%20]}]
   });
 }
 
@@ -51,7 +61,7 @@ export default class App extends Component {
           // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
           renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
           rowHeight={71}
-          poolSize={40}
+          poolSize={20}
           style={{flex: 1}}
         />
       </View>
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
   initialsCircle: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#49bed8',
+    // backgroundColor: '#49bed8',
     borderRadius: 25,
     width: 50,
     height: 50,
