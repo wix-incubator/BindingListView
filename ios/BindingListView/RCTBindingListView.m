@@ -122,17 +122,10 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
     NSString *viewName = [binding objectForKey:@"viewName"];
     NSString *prop = [binding objectForKey:@"prop"];
     NSString *rowValue = [row objectForKey:rowKey];
-    if ([prop isEqualToString:@"children"])
-    {
-      dispatch_async(RCTGetUIManagerQueue(), ^{
-        [_uiManager updateView:reactTag viewName:@"RCTRawText" props:@{@"text": rowValue}];
-        [_uiManager batchDidComplete];
-      });
-    }
-    else
-    {
-      [_uiManager synchronouslyUpdateViewOnUIThread:reactTag viewName:viewName props:@{prop: rowValue}];
-    }
+    dispatch_async(RCTGetUIManagerQueue(), ^{
+      [_uiManager updateView:reactTag viewName:viewName props:@{prop: rowValue}];
+      [_uiManager batchDidComplete];
+    });
   }
   
   return cell;

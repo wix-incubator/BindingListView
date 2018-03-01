@@ -1,7 +1,8 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import ReactNative, { View, requireNativeComponent } from 'react-native';
 import StaticContainer from './StaticContainer';
-import _ from 'lodash';
+const ReactNativeAttributePayload = require('ReactNativeAttributePayload');
 
 const RCTBindingListView = requireNativeComponent('RCTBindingListView');
 const RCTBindingCell = requireNativeComponent('RCTBindingCell');
@@ -11,11 +12,11 @@ export default class BindingListView extends Component {
     const poolChildren = [];
     for (let i = 0; i < this.props.poolSize; i++) {
       const child = (
-        <BindingRow key={i} renderItemTemplate={this.props.renderItemTemplate} />
+        <BindingRow key={i} renderItemTemplate={this.props.renderItemTemplate} binderMap={this.props.binderMap} />
       );
       poolChildren.push(child);
     }
-    const binding = _.mapValues(_.keyBy(this.props.binding, (v) => v.id), (v) => v.toRowKey);
+    const binding = _.mapValues(this.props.binderMap, (v) => v.toRowKey);
     return (
       <RCTBindingListView
         rows={this.props.rows}
@@ -34,48 +35,81 @@ export default class BindingListView extends Component {
 class BindingRow extends Component {
   constructor(props) {
     super(props);
-    this.bindings = {};
     this.state = {
       bindings: {}
     }
   }
   render() {
     return (
-      <RCTBindingCell bindings={this.state.bindings}>
+      <RCTBindingCell bindings={this.state.bindings} ref={this.elementCreated.bind(this)}>
         <StaticContainer>
-          {
-            this.props.renderItemTemplate((element, { id, toProp }) => {
-              if (!toProp) return;
-              switch (element.constructor.displayName) {
-                case 'Image':
-                  element = getRenderedElement(element);
-                  break;
-              }
-              if (toProp === 'children') {
-                element = getFirstChild(element);
-              }
-              this.bindings[id] = {
-                tag: ReactNative.findNodeHandle(element),
-                prop: toProp,
-                viewName: _.get(element, 'viewConfig.uiViewClassName')
-              };
-              this.setState({ bindings: this.bindings });
-            })
-          }
+          {this.props.renderItemTemplate(_createBinderMap(this.props.binderMap))}
         </StaticContainer>
       </RCTBindingCell>
     );
   }
+  elementCreated(element) {
+    if (!_.isEmpty(this.state.bindings)) return;
+    const bindings = {};
+    const inverseBinderMap = _.invert(_createBinderMap(this.props.binderMap));
+    _getBindingsRecursivelyFromElement(element, bindings, inverseBinderMap);
+    if (!_.isEmpty(bindings)) {
+      this.setState({bindings});
+    }
+  }
 }
 
-function getRenderedElement(element) {
-  // may god help us, is there a better way?
-  return _.get(element, '_reactInternalInstance._renderedComponent');
+function _hashBindingId(bindingId) {
+  return `__${bindingId}__`;
 }
 
-function getFirstChild(element) {
-  // may god help us, is there a better way?
-  const children = _.get(element, '_reactInternalInstance._renderedComponent._renderedChildren');
-  if (_.size(children) == 0) return undefined;
-  return _.head(_.toPairs(children))[1];
+function _createBinderMap(binderMapDict) {
+  return _.mapValues(binderMapDict, (v, k) => _hashBindingId(k));
+}
+
+function _getBindingsRecursivelyFromElement(element, bindings, inverseBinderMap) {
+  if (!element) return;
+  while (element._renderedComponent) {
+    element = element._renderedComponent;
+  }
+  if (element._renderedChildren) {
+    _.forEach(element._renderedChildren, (child) => _getBindingsRecursivelyFromElement(child, bindings, inverseBinderMap));
+  }
+  if (element._currentElement && element.viewConfig) {
+    const props = element._currentElement.props;
+    const viewConfig = element.viewConfig;
+    const propUpdates = ReactNativeAttributePayload.create(props, viewConfig.validAttributes);
+    _.forEach(propUpdates, (newValue, propName) => {
+      let bindingId;
+      if (_.isString(newValue)) {
+        bindingId = inverseBinderMap[newValue];
+      }
+      if (_.isArray(newValue) || _.isPlainObject(newValue)) {
+        _.cloneDeepWith(newValue, (v) => {
+          if (_.isString(v)) {
+            foundBindingId = inverseBinderMap[v];
+            if (foundBindingId) bindingId = foundBindingId;
+            return foundBindingId;
+          }
+        });
+      }
+      if (bindingId) {
+        bindings[bindingId] = {
+          tag: ReactNative.findNodeHandle(element),
+          prop: propName,
+          viewName: _.get(viewConfig, 'uiViewClassName')
+        };
+      }
+    });
+  }
+  if (element._currentElement && _.isString(element._currentElement)) {
+    const bindingId = inverseBinderMap[element._currentElement];
+    if (bindingId) {
+      bindings[bindingId] = {
+        tag: ReactNative.findNodeHandle(element),
+        prop: 'text',
+        viewName: 'RCTRawText'
+      };
+    }
+  }
 }
