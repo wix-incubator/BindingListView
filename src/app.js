@@ -65,8 +65,8 @@ export default class App extends Component {
           }}
           // renderItemTemplate={this.renderItemTemplate_withTextInputs.bind(this)}
           // renderItemTemplate={this.renderItemTemplate_withTexts.bind(this)}
-          renderItemTemplate={this.renderItemTemplate_withRelayout.bind(this)}
-          // renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
+          // renderItemTemplate={this.renderItemTemplate_withRelayout.bind(this)}
+          renderItemTemplate={this.renderItemTemplate_withImages.bind(this)}
           rowHeight={71}
           poolSize={20}
           style={{flex: 1}}

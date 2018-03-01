@@ -105,6 +105,7 @@ function _getBindingsRecursivelyFromElement(element, bindings, inverseBinderMap)
   if (element._currentElement && _.isString(element._currentElement)) {
     const bindingId = inverseBinderMap[element._currentElement];
     if (bindingId) {
+      //TODO: incorrect TAG for TextView
       bindings[bindingId] = {
         tag: ReactNative.findNodeHandle(element),
         prop: 'text',

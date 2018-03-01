@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -19,6 +18,7 @@ public class ReactListManager extends ViewGroupManager<RecyclerView> {
     private int poolSize;
     private float height;
     private ReactListAdapter adapter;
+    private ReadableMap bindings;
 
     @Override
     public String getName() {
@@ -27,7 +27,7 @@ public class ReactListManager extends ViewGroupManager<RecyclerView> {
 
     @Override
     protected RecyclerView createViewInstance(ThemedReactContext reactContext) {
-        adapter = new ReactListAdapter(reactContext);
+        adapter = new ReactListAdapter();
         RecyclerView list = new RecyclerView(reactContext);
         list.setLayoutManager(new LinearLayoutManager(reactContext));
         list.setItemViewCacheSize(poolSize);
@@ -46,7 +46,9 @@ public class ReactListManager extends ViewGroupManager<RecyclerView> {
 
     @ReactProp(name = "binding")
     public void setBinding(RecyclerView view, ReadableMap binding) {
-        //TODO: implement laterrr
+        Log.i("NIGA", "list = " + binding.toString());
+        this.bindings = binding;
+        adapter.setBindings(binding);
     }
 
     @ReactProp(name = "rows")
@@ -57,6 +59,7 @@ public class ReactListManager extends ViewGroupManager<RecyclerView> {
     @Override
     public void addView(RecyclerView parent, View child, int index) {
         ReactCell cell = (ReactCell) child;
+        cell.setRootBindings(this.bindings);
         cell.setHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height, parent.getResources().getDisplayMetrics()));
         adapter.addCell(cell);
         if (poolSize == adapter.getPoolSize()) {
