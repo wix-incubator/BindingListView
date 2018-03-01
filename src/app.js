@@ -101,11 +101,11 @@ export default class App extends Component {
     return (
       <View style={styles.rowBody}>
         <Image
-          ref={(element) => bind(element, { id: 'thumbnail', toProp: 'source' })}
+          // ref={(element) => bind(element, { id: 'thumbnail', toProp: 'source' })}
           style={styles.initialsCircle}
           source={{uri: images[0]}} />
         <Text
-          ref={(element) => bind(element, { id: 'nameText', toProp: 'children' })}
+          // ref={(element) => bind(element, { id: 'nameText', toProp: 'children' })}
           style={styles.name}>First Last</Text>
       </View>
     );
